@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Text Summarization{% endblock %}
+
+{% block extra_css %}
+<style>
+    .textarea-counter {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+    .preview-box {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        padding: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-file-text me-2"></i>Text Summarization
+                </h3>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('main.summarize') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4">
+                        {{ render_field(form.title, class="form-control", placeholder="Enter summary title (optional)") }}
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ render_field(form.text, class="form-control", rows="8", 
+                                       placeholder="Paste sports commentary text here...") }}
+                        <div class="textarea-counter mt-1">
+                            <span id="charCount">0</span> characters
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            {{ render_field(form.min_length, class="form-control", type="number") }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ render_field(form.max_length, class="form-control", type="number") }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" class="btn btn-outline-secondary me-2" id="clearBtn">
+                            <i class="fas fa-trash me-1"></i>Clear
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-magic me-1"></i>Generate Summary
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Example Text -->
+                <div class="mt-5">
+                    <h5 class="mb-3"><i class="fas fa-lightbulb me-2"></i>Example Commentary</h5>
+                    <div class="preview-box">
+                        <p class="mb-2">"[15'] Great build-up play from Manchester United! Fernandes through to Rashford who takes a shot... SAVED by the goalkeeper! Corner awarded.</p>
+                        <p class="mb-2">"[23'] YELLOW CARD! Smith receives a booking for a late challenge on Rodriguez.</p>
+                        <p class="mb-2">"[34'] GOAL! MANCHESTER UNITED 1-0! Brilliant team move finished by Martial! Assist from Wan-Bissaka.</p>
+                        <p class="mb-2">"[45+2'] HALF TIME: Manchester United lead 1-0 at the break.</p>
+                        <p class="mb-2">"[67'] SUBSTITUTION: Greenwood comes on for Martial who looks to have picked up a slight injury.</p>
+                        <p class="mb-2">"[89'] PENALTY! Handball in the box! Fernandes steps up... SCORES! 2-0!</p>
+                        <p class="mb-0">"[90+4'] FULL TIME: Manchester United win 2-0 in a dominant performance."</p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="loadExample">
+                        <i class="fas fa-arrow-down me-1"></i>Load Example
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Character counter
+    $('#text').on('input', function() {
+        $('#charCount').text($(this).val().length);
+    });
+    
+    // Clear button
+    $('#clearBtn').click(function() {
+        $('#text').val('');
+        $('#title').val('');
+        $('#charCount').text('0');
+    });
+    
+    // Load example
+    $('#loadExample').click(function() {
+        const exampleText = `"[15'] Great build-up play from Manchester United! Fernandes through to Rashford who takes a shot... SAVED by the goalkeeper! Corner awarded.
+
+[23'] YELLOW CARD! Smith receives a booking for a late challenge on Rodriguez.
+
+[34'] GOAL! MANCHESTER UNITED 1-0! Brilliant team move finished by Martial! Assist from Wan-Bissaka.
+
+[45+2'] HALF TIME: Manchester United lead 1-0 at the break.
+
+[67'] SUBSTITUTION: Greenwood comes on for Martial who looks to have picked up a slight injury.
+
+[89'] PENALTY! Handball in the box! Fernandes steps up... SCORES! 2-0!
+
+[90+4'] FULL TIME: Manchester United win 2-0 in a dominant performance."`;
+        
+        $('#text').val(exampleText);
+        $('#charCount').text(exampleText.length);
+        $('#title').val('Manchester United vs Arsenal Commentary');
+    });
+});
+</script>
+{% endblock %}

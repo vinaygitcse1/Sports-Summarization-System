@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Login - Sports Summarizer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h3 class="card-title mb-0 text-center">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login to Your Account
+                </h3>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('auth.login') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-4">
+                        {{ render_field(form.email, class="form-control", placeholder="Enter your email") }}
+                    </div>
+                    
+                    <div class="mb-4">
+                        {{ render_field(form.password, class="form-control", placeholder="Enter your password") }}
+                        <div class="form-text">
+                            <a href="#" class="text-decoration-none">Forgot password?</a>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="form-check">
+                            {{ form.remember(class="form-check-input") }}
+                            {{ form.remember.label(class="form-check-label") }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <p class="mb-2">Don't have an account?</p>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-1"></i>Create New Account
+                    </a>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="text-muted mb-2">Or continue with</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-outline-secondary">
+                            <i class="fab fa-google"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary">
+                            <i class="fab fa-github"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <div class="alert alert-info">
+                <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Demo Credentials</h5>
+                <p class="mb-1"><strong>Email:</strong> demo@sports.com</p>
+                <p class="mb-0"><strong>Password:</strong> demo123</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Demo login functionality
+    $('.demo-login').click(function() {
+        $('#email').val('demo@sports.com');
+        $('#password').val('demo123');
+        $('form').submit();
+    });
+    
+    // Enter key to submit
+    $('#password').keypress(function(e) {
+        if(e.which == 13) {
+            $('form').submit();
+        }
+    });
+});
+</script>
+{% endblock %}

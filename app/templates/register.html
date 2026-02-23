@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block title %}Register - Sports Summarizer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="card shadow border-0">
+            <div class="card-header bg-success text-white py-3">
+                <h3 class="card-title mb-0 text-center">
+                    <i class="fas fa-user-plus me-2"></i>Create Your Account
+                </h3>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('auth.register') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            {{ render_field(form.username, class="form-control", placeholder="Choose a username") }}
+                            <div class="form-text">
+                                Must be 3-64 characters
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            {{ render_field(form.email, class="form-control", placeholder="Enter your email") }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            {{ render_field(form.password, class="form-control", placeholder="Create a password") }}
+                            <div class="form-text">
+                                At least 6 characters
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            {{ render_field(form.confirm_password, class="form-control", placeholder="Confirm password") }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-user-plus me-1"></i>Create Account
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-4 text-center">
+                    <p class="mb-2">Already have an account?</p>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-success">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login Here
+                    </a>
+                </div>
+                
+                <hr class="my-4">
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-futbol fa-2x text-primary mb-2"></i>
+                            <h6>Sports Summaries</h6>
+                            <p class="small text-muted">Generate instant summaries of sports commentary</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-microphone fa-2x text-success mb-2"></i>
+                            <h6>Audio Processing</h6>
+                            <p class="small text-muted">Upload audio files or record live commentary</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3">
+                            <i class="fas fa-history fa-2x text-info mb-2"></i>
+                            <h6>History Tracking</h6>
+                            <p class="small text-muted">Save and access all your previous summaries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Password strength indicator
+    $('#password').on('input', function() {
+        const password = $(this).val();
+        let strength = 0;
+        
+        if (password.length >= 6) strength++;
+        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+        if (password.match(/\d/)) strength++;
+        if (password.match(/[^a-zA-Z\d]/)) strength++;
+        
+        const strengthText = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'][strength];
+        const strengthClass = ['danger', 'warning', 'info', 'primary', 'success'][strength];
+        
+        $('#password-strength').remove();
+        $(this).after(`<div id="password-strength" class="mt-1"><small>Strength: <span class="text-${strengthClass}">${strengthText}</span></small></div>`);
+    });
+    
+    // Confirm password validation
+    $('#confirm_password').on('input', function() {
+        const password = $('#password').val();
+        const confirm = $(this).val();
+        
+        if (confirm && password !== confirm) {
+            $(this).addClass('is-invalid');
+            $(this).after('<div class="invalid-feedback">Passwords do not match</div>');
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
+    });
+});
+</script>
+{% endblock %}
